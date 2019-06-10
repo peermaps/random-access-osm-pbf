@@ -6,16 +6,18 @@ var BlobEncoder = require('osm-pbf-parser/lib/blob_encoder')
 var BlobDecompressor = require('osm-pbf-parser/lib/decompress')
 var PrimitivesParser = require('osm-pbf-parser/lib/primitives')
 
+var dataType = Buffer.from([0x07, 0x4f, 0x53, 0x4d, 0x44, 0x61, 0x74, 0x61])
+
 module.exports = function (opts) {
   var primitive =  new PrimitivesParser()
   if (opts.header) {
     primitive._osmheader = opts.header
-    parse()
+    find()
   } else {
     getHeader(opts.read, function (err, header) {
       if (err) return console.error(err)
       primitive._osmheader = header
-      parse()
+      find()
     })
   }
   var combineStream = combine.obj([
@@ -24,12 +26,25 @@ module.exports = function (opts) {
     primitive
   ])
   return combineStream
-  function parse () {
-    var offset = opts.start
+  function find () {
+    var start, end, pending = 2
+    findAlignment(opts.read, opts.start, function (err, offset) {
+      if (err) return combineStream.emit('error', err)
+      start = offset
+      if (--pending === 0) parse(start, end)
+    })
+    findAlignment(opts.read, opts.end, function (err, offset) {
+      if (err) return combineStream.emit('error', err)
+      end = offset
+      if (--pending === 0) parse(start, end)
+    })
+  }
+  function parse (start, end) {
+    var offset = start
     var len = 4096
     var r = new Readable({ 
       read: function (size) {
-        if (offset > opts.end) return r.push(null)
+        if (offset > end) return r.push(null)
         opts.read(offset, len, function (err, buf) {
           if (err) return combineStream.emit('error', err)
           offset += len
@@ -65,5 +80,18 @@ function getHeader (read, cb) {
     combineStream.write(buf)
     offset += len
     read(offset, len, onRead)
+  })
+}
+
+function findAlignment (read, offset, cb) {
+  var len = 4096
+  read(offset, len, function onRead (err, buf) {
+    if (err) return cb(err)
+    var index = buf.indexOf(dataType)
+    if (index < 0) {
+      offset += len - dataType.length
+      return read(offset, len, onRead)
+    }
+    cb(null, offset + index - 5)
   })
 }
