@@ -28,12 +28,12 @@ module.exports = function (opts) {
   return combineStream
   function find () {
     var start, end, pending = 2
-    findAlignment(opts.read, opts.start, function (err, offset) {
+    findAlignment(opts.read, opts.start, opts.size, function (err, offset) {
       if (err) return combineStream.emit('error', err)
       start = offset
       if (--pending === 0) parse(start, end)
     })
-    findAlignment(opts.read, opts.end, function (err, offset) {
+    findAlignment(opts.read, opts.end, opts.size, function (err, offset) {
       if (err) return combineStream.emit('error', err)
       end = offset
       if (--pending === 0) parse(start, end)
@@ -41,11 +41,11 @@ module.exports = function (opts) {
   }
   function parse (start, end) {
     var offset = start
-    var len = 4096
+    var len = 4096 
     var r = new Readable({ 
       read: function (size) {
-        if (offset > end) return r.push(null)
-        opts.read(offset, len, function (err, buf) {
+        if (offset >= end) return r.push(null)
+        opts.read(offset, Math.min(len, opts.size - offset), function (err, buf) {
           if (err) return combineStream.emit('error', err)
           offset += len
           r.push(buf)
@@ -83,13 +83,15 @@ function getHeader (read, cb) {
   })
 }
 
-function findAlignment (read, offset, cb) {
+function findAlignment (read, offset, size, cb) {
   var len = 4096
+  if (offset + len >= size) return cb(null, size)
   read(offset, len, function onRead (err, buf) {
     if (err) return cb(err)
     var index = buf.indexOf(dataType)
     if (index < 5) {
       offset += len - dataType.length
+      if (offset + len >= size) return cb(null, size)
       return read(offset, len, onRead)
     }
     cb(null, offset + index - 5)
