@@ -88,7 +88,7 @@ function findAlignment (read, offset, cb) {
   read(offset, len, function onRead (err, buf) {
     if (err) return cb(err)
     var index = buf.indexOf(dataType)
-    if (index < 0) {
+    if (index < 5) {
       offset += len - dataType.length
       return read(offset, len, onRead)
     }
