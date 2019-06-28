@@ -1,14 +1,16 @@
-# random access osm pbf
+# random-access-osm-pbf
 
-gives you random access reads into an [osm pbf
+Provides random access reads into an [osm pbf
 file](https://wiki.openstreetmap.org/wiki/PBF_Format).
 
-[planet.osm](https://wiki.openstreetmap.org/wiki/Planet.osm) is a single pbf file of the entire planet, but you can also get
-[extracts](https://www.interline.io/osm/extracts/) (pbfs at the city or regional
-level).
+Usually when parsing pbf files, you have to start at the beginning and if the
+files are really large, then this can take a really long time. it's also not
+parellelizable.
 
-this module expects binary data from an osm pbf file as input and
-returns an object stream. the objects in the output stream are in the form described in [osm-pbf-parser](https://www.npmjs.com/package/osm-pbf-parser).
+With this module, you can provide `start` and `end` offsets into a pbf file and
+receive complete items as output. the `start` and `end` values don't have to
+match exact alignments in the pbf file. this module scans forward from those
+offsets to find the nearest correct alignment point.
 
 
 # api
@@ -17,9 +19,12 @@ returns an object stream. the objects in the output stream are in the form descr
 var raOSM = require('random-access-osm-pbf')
 ```
 
-## var OSM = raOSM(opts)
+## var osm = raOSM(opts)
 
 creates a new stream which gets processed by [osm-pbf-parser](https://www.npmjs.com/package/osm-pbf-parser).
+
+this module expects binary data from an osm pbf file as input and
+returns an object stream. the objects in the output stream are in the form described in [osm-pbf-parser](https://www.npmjs.com/package/osm-pbf-parser).
 
 each item in the input can have properties:
 
