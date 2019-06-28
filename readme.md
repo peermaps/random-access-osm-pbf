@@ -4,7 +4,8 @@ gives you random access reads into an [osm pbf
 file](https://wiki.openstreetmap.org/wiki/PBF_Format).
 
 [planet.osm](https://wiki.openstreetmap.org/wiki/Planet.osm) is a single pbf file of the entire planet, but you can also get
-['extracts'](https://www.interline.io/osm/extracts/), pbfs at the city or regional level.
+[extracts](https://www.interline.io/osm/extracts/) (pbfs at the city or regional
+level).
 
 this module expects binary data from an osm pbf file as input and
 returns an object stream. the objects in the output stream are in the form described in [osm-pbf-parser](https://www.npmjs.com/package/osm-pbf-parser).
@@ -16,15 +17,11 @@ returns an object stream. the objects in the output stream are in the form descr
 var raOSM = require('random-access-osm-pbf')
 ```
 
-## var raOSM
-
-``` js
-var osm = raOSM(opts)
-```
+## var OSM = raOSM(opts)
 
 creates a new stream which gets processed by [osm-pbf-parser](https://www.npmjs.com/package/osm-pbf-parser).
 
-each input can have properties:
+each item in the input can have properties:
 
 * header
 * start (block position start integer)
