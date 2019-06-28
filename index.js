@@ -17,6 +17,7 @@ module.exports = function (opts) {
     getHeader(opts.read, function (err, header) {
       if (err) return console.error(err)
       primitive._osmheader = header
+      combineStream.emit('header', header)
       find()
     })
   }
