@@ -24,8 +24,7 @@ var raOSM = require('random-access-osm-pbf')
 Creates a new stream which gets processed by [osm-pbf-parser](https://www.npmjs.com/package/osm-pbf-parser).
 
 This module expects binary data from an osm pbf file as input and
-returns an object stream. The objects in the output stream are in the form
-described in [osm-pbf-parser](https://www.npmjs.com/package/osm-pbf-parser).
+returns an object stream.
 
 Each item in `opts` can have properties:
 
