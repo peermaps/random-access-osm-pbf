@@ -4,7 +4,7 @@ Provides random access reads into an [osm pbf
 file](https://wiki.openstreetmap.org/wiki/PBF_Format).
 
 Usually when parsing pbf files, you have to start at the beginning and if the
-files are really large, then this can take a really long time. it's also not
+files are really large, then this can take a really long time. It's also not
 parellelizable.
 
 With this module, you can provide `start` and `end` offsets into a pbf file and
@@ -21,23 +21,30 @@ var raOSM = require('random-access-osm-pbf')
 
 ## var osm = raOSM(opts)
 
-creates a new stream which gets processed by [osm-pbf-parser](https://www.npmjs.com/package/osm-pbf-parser).
+Creates a new stream which gets processed by [osm-pbf-parser](https://www.npmjs.com/package/osm-pbf-parser).
 
-this module expects binary data from an osm pbf file as input and
-returns an object stream. the objects in the output stream are in the form described in [osm-pbf-parser](https://www.npmjs.com/package/osm-pbf-parser).
+This module expects binary data from an osm pbf file as input and
+returns an object stream. The objects in the output stream are in the form
+described in [osm-pbf-parser](https://www.npmjs.com/package/osm-pbf-parser).
 
-each item in the input can have properties:
+Each item in `opts` can have properties:
 
-* header
-* start (block position start integer)
-* end (block position end integer)
-* size (in blocks)
-* read 
+* `opts.start` - start file offset (can be unaligned)
+* `opts.end` - end file offset (can be unaligned)
+* `opts.size` - size of the pbf file in bytes
+* `opts.read(offset, length, cb)` - function that reads `length` bytes from an
+  `offset` and returns the data in `cb(err, buf)`
+* `opts.header` - use a previously-parsed header from a file to skip parsing 
+
+## osm.on('header', fn)
+
+Emits a `header` event when the header is parsed with the header value as
+`fn(header)`. You can pass this header as `opts.header` to skip parsing later.
 
 
 # examples
 
-in this example, we pass in the pbf file as the first argument, and a start and
+In this example, we pass in the pbf file as the first argument, and a start and
 end offset as the second and third arguments.
 
 
@@ -88,3 +95,11 @@ the output comes out in this form:
        user: 'dimonster' } }
 }
 ```
+
+# install
+
+`npm install random-access-osm-pbf`
+
+# license
+
+BSD
