@@ -1,19 +1,22 @@
 {
-  "name": "peermaps-georender",
+  "name": "random-access-osm-pbf",
   "version": "1.0.0",
-  "description": "",
+  "description": "get random access into an osm pbf file at a specified offset",
   "main": "index.js",
   "scripts": {
-    "test": "tape test/*.js"
+    "test": "tape test/*.js",
+    "install-test-data": "mkdir -p test/fixtures && curl -o test/fixtures/kharkiv_ukraine.osm.pbf https://kitties.neocities.org/kharkiv_ukraine.osm.pbf"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "mk30",
+  "license": "BSD",
   "dependencies": {
     "osm-pbf-parser": "^2.3.0",
-    "random-access-file": "^2.1.2",
+    "readable-stream": "^3.4.0",
+    "stream-combiner2": "^1.1.1",
     "through2": "^3.0.1"
   },
   "devDependencies": {
+    "random-access-file": "^2.1.2",
     "tape": "^4.9.2"
   }
 }
