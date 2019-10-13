@@ -12,40 +12,10 @@ receive complete items as output. the `start` and `end` values don't have to
 match exact alignments in the pbf file. this module scans forward from those
 offsets to find the nearest correct alignment point.
 
-
-# api
-
-``` js
-var raOSM = require('random-access-osm-pbf')
-```
-
-## var osm = raOSM(opts)
-
-Creates a new stream which gets processed by [osm-pbf-parser](https://www.npmjs.com/package/osm-pbf-parser).
-
-This module expects binary data from an osm pbf file as input and
-returns an object stream.
-
-Each item in `opts` can have properties:
-
-* `opts.start` - start file offset (can be unaligned)
-* `opts.end` - end file offset (can be unaligned)
-* `opts.size` - size of the pbf file in bytes
-* `opts.read(offset, length, cb)` - function that reads `length` bytes from an
-  `offset` and returns the data in `cb(err, buf)`
-* `opts.header` - use a previously-parsed header from a file to skip parsing 
-
-## osm.on('header', fn)
-
-Emits a `header` event when the header is parsed with the header value as
-`fn(header)`. You can pass this header as `opts.header` to skip parsing later.
-
-
 # examples
 
 In this example, we pass in the pbf file as the first argument, and a start and
 end offset as the second and third arguments.
-
 
 ``` js
 var raOSM = require('random-access-osm-pbf')
@@ -94,6 +64,33 @@ the output comes out in this form:
        user: 'dimonster' } }
 }
 ```
+
+# api
+
+``` js
+var raOSM = require('random-access-osm-pbf')
+```
+
+## var osm = raOSM(opts)
+
+Creates a new stream which gets processed by [osm-pbf-parser](https://www.npmjs.com/package/osm-pbf-parser).
+
+This module expects binary data from an osm pbf file as input and
+returns an object stream.
+
+Each item in `opts` can have properties:
+
+* `opts.start` - start file offset (can be unaligned)
+* `opts.end` - end file offset (can be unaligned)
+* `opts.size` - size of the pbf file in bytes
+* `opts.read(offset, length, cb)` - function that reads `length` bytes from an
+  `offset` and returns the data in `cb(err, buf)`
+* `opts.header` - use a previously-parsed header from a file to skip parsing 
+
+## osm.on('header', fn)
+
+Emits a `header` event when the header is parsed with the header value as
+`fn(header)`. You can pass this header as `opts.header` to skip parsing later.
 
 # install
 
