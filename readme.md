@@ -101,4 +101,4 @@ the output comes out in this form:
 
 # license
 
-BSD
+MIT
